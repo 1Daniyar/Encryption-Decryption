@@ -1,0 +1,70 @@
+package encryptdecrypt;
+
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.Scanner;
+
+public class Main {
+    public static void main(String[] args) throws IOException {
+        String operation = "enc";
+        char[] mas = "".toCharArray();
+        int key = 0;
+        String out = null;
+
+        for(int i = 0; i < args.length; i++){
+            switch (args[i]){
+                case "-mode":
+                    operation = args[++i];
+                    break;
+                case "-key":
+                    key = Integer.parseInt(args[++i]);
+                    break;
+                case "-data":
+                    mas = args[++i].toCharArray();
+                    break;
+                case "-in":
+                    if(new String(mas).equals("")){
+                        Scanner scanner = new Scanner(args[++i]);
+                        mas = scanner.nextLine().toCharArray();
+                    }
+                    break;
+                case "-out":
+                    out = args[++i];
+                    break;
+            }
+        }
+
+        switch (operation){
+            case "enc":
+                if(out != null){
+                    FileWriter writer = new FileWriter(out);
+                    writer.write(enc(mas,key));
+                    writer.close();
+                }else
+                    System.out.println(enc(mas, key));
+                break;
+            case "dec":
+                if(out != null){
+                    FileWriter writer = new FileWriter(out);
+                    writer.write(enc(mas,key));
+                    writer.close();
+                }else
+                    System.out.println(dec(mas, key));
+                break;
+        }
+    }
+
+    static String enc(char[] ar, int key){
+        for(int i = 0; i < ar.length; i++){
+            ar[i] = (char) (ar[i] + key <= 127 ? ar[i] + key : ar[i] + key - 32);
+        }
+        return new String(ar);
+    }
+
+    static  String dec(char[] ar, int key){
+        for(int i = 0; i < ar.length; i++){
+            ar[i] = (char) (ar[i] - key < 32 ? ar[i] - key + 127 : ar[i] - key);
+        }
+        return new String(ar);
+    }
+}
